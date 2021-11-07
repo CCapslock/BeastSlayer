@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using UnityEngine;
 
 namespace Abstraction
 {
     public interface IMove
     {
         int Step { get; }
-        void BowOut();
+        Vector3 BowOut(string direction, Vector3 position);
     }
 }
