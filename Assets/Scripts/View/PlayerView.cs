@@ -1,26 +1,19 @@
-using Core;
 using UnityEngine;
 
 namespace View
 {
     public class PlayerView : MonoBehaviour
     {
-        [SerializeField] private float _damage;
-        [SerializeField] private int _step;
-        [SerializeField] private float _maxHealth;
+        [SerializeField] private float _step;
+        [SerializeField] private GameObject _target;
         
-        private PlayerModel _playerModel;
-
-        public void Start()
+        public void Update()
         {
-            _playerModel = new PlayerModel(_damage, _maxHealth, _step);
-        }
+            if (Input.GetKey(KeyCode.D)) transform.RotateAround(_target.transform.position, Vector3.up, -_step); 
+            if (Input.GetKey(KeyCode.A)) transform.RotateAround(_target.transform.position, Vector3.up, _step);
+            else transform.RotateAround(_target.transform.position, Vector3.up, 0);
 
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.D)) _playerModel.BowOut("Right", transform.position);
-            else if (Input.GetKeyDown(KeyCode.A)) _playerModel.BowOut("Left", transform.position);
-            else if (Input.GetKeyDown(KeyCode.Space)) _playerModel.Attack();
+            if (Input.GetKeyDown(KeyCode.Space)) Debug.Log("I Attack");
         }
     }
 }
