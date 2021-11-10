@@ -3,8 +3,10 @@ using UnityEngine;
 
 namespace Core
 {
-    public class PlayerModel : IAttacable, IMove, IHealth
+    public class Player : IAttacable, IMove, IHealth, IJump
     {
+        #region Fields
+
         public float Damage => _damage;
 
         public int Step => _step;
@@ -18,23 +20,36 @@ namespace Core
         private float _maxHealth;
         private int _step;
 
-        public PlayerModel(float damage, float maxHealth, int step)
+        #endregion
+
+        #region Life cycle
+
+        public Player(float damage, float maxHealth, int step)
         {
             _damage = damage;
             _maxHealth = maxHealth;
             _step = step;
         }
 
+        #endregion
+
+        #region Metods
+
         public void Attack()
         {
             Debug.Log("I attack!");
         }
 
-        public Vector3 BowOut(string direction, Vector3 position)
+        public void BowOut(string direction, Vector3 position)
         {
-            Debug.Log($"I bow out {direction}!");
-            position.z += _step;
-            return position;
+            
         }
+
+        public void Jump()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
     }
 }
