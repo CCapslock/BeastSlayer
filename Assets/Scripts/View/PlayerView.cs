@@ -11,13 +11,15 @@ namespace View
         [SerializeField] private GameObject _target;
         [SerializeField] private float _speed;
         [SerializeField] private float _force;
+        [SerializeField] private float _inpuls;
 
         private Player _playerModel;
         private Quaternion _startPosition;
         private float _stepDirection;
+        private Rigidbody _rigidbody;
 
         private bool _isRotation;
-        private bool _isJump;
+        private bool _isGround;
 
         #endregion
 
@@ -27,7 +29,7 @@ namespace View
         {
             _startPosition = transform.rotation;
             _isRotation = false;
-            _isJump = false;
+            _rigidbody = gameObject.GetComponent<Rigidbody>();
         }
 
         public void Update()
@@ -42,17 +44,7 @@ namespace View
 
             if (Input.GetKeyDown(KeyCode.W) && !_isRotation) Debug.Log("I Attack!");
 
-            if (Input.GetKeyDown(KeyCode.Space) && !_isJump) _isJump = true;
-
-            if (_isJump)
-            {
-                if (transform.position.y != 0.6f)
-                {
-                    var positionY = Mathf.Sqrt(_force -= 0.1f);
-                    transform.position = new Vector3(0, positionY);
-                }
-                else _isJump = false;    
-            }
+            if (Input.GetKeyDown(KeyCode.Space)) Jump(_isGround);
         }
 
         public void FixedUpdate()
@@ -70,6 +62,23 @@ namespace View
                     _startPosition = transform.rotation;
                 }
             }
+        }
+
+        public void OnCollisionEnter(Collision collision)
+        {
+            var ground = collision.gameObject.CompareTag("Ground");
+            if (ground) _isGround = true;
+        }
+
+        public void OnCollisionExit(Collision collision)
+        {
+            var ground = collision.gameObject.CompareTag("Ground");
+            if (ground) _isGround = false;
+        }
+
+        public void Jump(bool isGround)
+        {
+            if (isGround) _rigidbody.AddForce(Vector3.up * _inpuls, ForceMode.Impulse);
         }
 
         #endregion
