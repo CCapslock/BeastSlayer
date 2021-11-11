@@ -1,5 +1,6 @@
 using Core;
 using UnityEngine;
+using UnityEditor;
 
 namespace View
 {
@@ -7,19 +8,29 @@ namespace View
     {
         #region Fields
 
+        [Space(10)]
+
+        [Header("Parameters")]
+
         [SerializeField] private float _step;
-        [SerializeField] private GameObject _target;
         [SerializeField] private float _speed;
         [SerializeField] private float _force;
-        [SerializeField] private float _inpuls;
+        [SerializeField] private float _inpulsJumping;
 
-        private Player _playerModel;
-        private Quaternion _startPosition;
-        private float _stepDirection;
+        [Space(10)]
+
+        [Header("Links")]
+
+        [SerializeField] private GameObject _target;
+        [SerializeField] private Camera _camera;
+
         private Rigidbody _rigidbody;
+        private Quaternion _startPosition;
+        private Vector3 _offset;
 
         private bool _isRotation;
         private bool _isGround;
+        private float _stepDirection;
 
         #endregion
 
@@ -30,16 +41,23 @@ namespace View
             _startPosition = transform.rotation;
             _isRotation = false;
             _rigidbody = gameObject.GetComponent<Rigidbody>();
+            _offset = _camera.transform.position - transform.position;
         }
 
         public void Update()
         {
-            if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A)) && !_isRotation)
+            if (!_isRotation && _isGround)
             {
-                _isRotation = true;
-
-                if (Input.GetKeyDown(KeyCode.D)) _stepDirection = -_step;
-                else _stepDirection = _step;
+                if (Input.GetKeyDown(KeyCode.D))
+                {
+                    _isRotation = true;
+                    _stepDirection = -_step;
+                }
+                else if (Input.GetKeyDown(KeyCode.A))
+                {
+                    _isRotation = true;
+                    _stepDirection = _step;
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.W) && !_isRotation) Debug.Log("I Attack!");
@@ -64,6 +82,11 @@ namespace View
             }
         }
 
+        public void LateUpdate()
+        {
+            _camera.transform.position = transform.position + _offset;
+        }
+
         public void OnCollisionEnter(Collision collision)
         {
             var ground = collision.gameObject.CompareTag("Ground");
@@ -78,7 +101,7 @@ namespace View
 
         public void Jump(bool isGround)
         {
-            if (isGround) _rigidbody.AddForce(Vector3.up * _inpuls, ForceMode.Impulse);
+            if (isGround) _rigidbody.AddForce(Vector3.up * _inpulsJumping, ForceMode.Impulse);
         }
 
         #endregion

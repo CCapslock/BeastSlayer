@@ -352,10 +352,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _step: 45
-  _target: {fileID: 1887297557}
   _speed: 4
   _force: 10
-  _inpuls: 5
+  _inpulsJumping: 5
+  _target: {fileID: 1887297557}
+  _camera: {fileID: 140521260}
 --- !u!65 &1237942417
 BoxCollider:
   m_ObjectHideFlags: 0
