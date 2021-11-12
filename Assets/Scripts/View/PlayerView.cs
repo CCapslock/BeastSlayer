@@ -1,6 +1,5 @@
 using Core;
 using UnityEngine;
-using UnityEditor;
 
 namespace View
 {
@@ -22,11 +21,9 @@ namespace View
         [Header("Links")]
 
         [SerializeField] private GameObject _target;
-        [SerializeField] private Camera _camera;
 
         private Rigidbody _rigidbody;
         private Quaternion _startPosition;
-        private Vector3 _offset;
 
         private bool _isRotation;
         private bool _isGround;
@@ -41,7 +38,6 @@ namespace View
             _startPosition = transform.rotation;
             _isRotation = false;
             _rigidbody = gameObject.GetComponent<Rigidbody>();
-            _offset = _camera.transform.position - transform.position;
         }
 
         public void Update()
@@ -82,11 +78,6 @@ namespace View
             }
         }
 
-        public void LateUpdate()
-        {
-            _camera.transform.position = transform.position + _offset;
-        }
-
         public void OnCollisionEnter(Collision collision)
         {
             var ground = collision.gameObject.CompareTag("Ground");
@@ -105,5 +96,6 @@ namespace View
         }
 
         #endregion
+
     }
 }
