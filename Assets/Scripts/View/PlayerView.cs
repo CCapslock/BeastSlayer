@@ -22,12 +22,13 @@ namespace View
 
         [SerializeField] private GameObject _target;
 
+        private Animator _animator;
         private Rigidbody _rigidbody;
         private Quaternion _startPosition;
 
+        private float _stepDirection;
         private bool _isRotation;
         private bool _isGround;
-        private float _stepDirection;
 
         #endregion
 
@@ -38,10 +39,14 @@ namespace View
             _startPosition = transform.rotation;
             _isRotation = false;
             _rigidbody = gameObject.GetComponent<Rigidbody>();
+            _animator = GetComponent<Animator>();
         }
 
         public void Update()
         {
+                
+            _animator.SetBool("IsBowOut", _isRotation);
+
             if (!_isRotation && _isGround)
             {
                 if (Input.GetKeyDown(KeyCode.D))
@@ -56,9 +61,15 @@ namespace View
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.W) && !_isRotation) Debug.Log("I Attack!");
+            if (Input.GetKeyDown(KeyCode.W) && !_isRotation)
+            {
+                Debug.Log("I Attack!");
+            }
 
-            if (Input.GetKeyDown(KeyCode.Space)) Jump(_isGround);
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Jump(_isGround);
+            }
         }
 
         public void FixedUpdate()
@@ -67,8 +78,11 @@ namespace View
             {
                 var angle = Quaternion.Angle(_startPosition, transform.rotation);
 
-                if (angle <= _step) transform.RotateAround(_target.transform.position, Vector3.up,
-                    _stepDirection * _speed * Time.fixedDeltaTime);
+                if (angle <= _step)
+                {
+                    transform.RotateAround(_target.transform.position, Vector3.up,
+                      _stepDirection * _speed * Time.fixedDeltaTime);
+                }
                 else
                 {
                     _isRotation = false;
@@ -82,12 +96,14 @@ namespace View
         {
             var ground = collision.gameObject.CompareTag("Ground");
             if (ground) _isGround = true;
+            _animator.SetBool("IsJump", false);
         }
 
         public void OnCollisionExit(Collision collision)
         {
             var ground = collision.gameObject.CompareTag("Ground");
             if (ground) _isGround = false;
+            _animator.SetBool("IsJump", true);
         }
 
         public void Jump(bool isGround)
